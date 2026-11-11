@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>گزارش عملکرد روزانه | سرپرست جذب تامین‌کنندگان — باروک</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #05060a;
+      --bg2: #0b0e17;
+      --card: rgba(18, 22, 36, 0.72);
+      --card-border: rgba(100, 140, 255, 0.18);
+      --neon: #5b8cff;
+      --neon2: #a78bfa;
+      --neon3: #22d3ee;
+      --success: #34d399;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --text: #e8eaf2;
+      --muted: #8b93a7;
+      --glass: blur(16px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Neural canvas background */
+    #neural-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding: 20px 24px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      backdrop-filter: var(--glass);
+      box-shadow: 0 0 40px rgba(91, 140, 255, 0.08);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--neon), var(--neon2));
+      display: grid; place-items: center;
+      font-size: 22px;
+      box-shadow: 0 0 24px rgba(91, 140, 255, 0.45);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(91,140,255,0.4); }
+      50% { box-shadow: 0 0 36px rgba(167,139,250,0.7); }
+    }
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .meta-date {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .meta-date .date-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .meta-date .date-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--neon3);
+    }
+    .live-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-left: 6px;
+      box-shadow: 0 0 10px var(--success);
+      animation: blink 1.6s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* KPI row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      backdrop-filter: var(--glass);
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: default;
+    }
+    .kpi:hover {
+      transform: translateY(-3px);
+      border-color: rgba(91,140,255,0.45);
+    }
+    .kpi .label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .kpi .value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, var(--neon), var(--neon3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .kpi .sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Main layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      backdrop-filter: var(--glass);
+      margin-bottom: 18px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title .icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(91,140,255,0.15);
+      display: grid; place-items: center;
+      font-size: 14px;
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon), var(--neon2));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(91,140,255,0.35);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+    .btn-danger {
+      background: rgba(248,113,113,0.15);
+      color: var(--danger);
+      border: 1px solid rgba(248,113,113,0.3);
+    }
+    .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: right;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: rgba(0,0,0,0.25);
+    }
+    tr:hover td { background: rgba(91,140,255,0.06); }
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-success { background: rgba(52,211,153,0.15); color: var(--success); }
+    .badge-warn { background: rgba(251,191,36,0.15); color: var(--warn); }
+    .badge-danger { background: rgba(248,113,113,0.15); color: var(--danger); }
+    .badge-info { background: rgba(91,140,255,0.15); color: var(--neon); }
+    .badge-purple { background: rgba(167,139,250,0.15); color: var(--neon2); }
+
+    /* Funnel */
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .funnel-step {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(91,140,255,0.12), rgba(167,139,250,0.06));
+      border: 1px solid rgba(91,140,255,0.2);
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .funnel-step:hover {
+      border-color: var(--neon);
+      transform: scale(1.01);
+      box-shadow: 0 0 20px rgba(91,140,255,0.2);
+    }
+    .funnel-step .step-name { font-weight: 600; font-size: 0.9rem; }
+    .funnel-step .step-count {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--neon3);
+    }
+    .funnel-step .step-bar {
+      position: absolute;
+      bottom: 0; right: 0;
+      height: 3px;
+      border-radius: 0 0 12px 12px;
+      background: linear-gradient(90deg, var(--neon), var(--neon2));
+      transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    /* Blockers */
+    .blocker-list { display: flex; flex-direction: column; gap: 10px; }
+    .blocker-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.2);
+      align-items: flex-start;
+    }
+    .blocker-item.resolved {
+      background: rgba(52,211,153,0.06);
+      border-color: rgba(52,211,153,0.2);
+      opacity: 0.75;
+    }
+    .blocker-item .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--danger);
+      margin-top: 5px;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px var(--danger);
+    }
+    .blocker-item.resolved .dot {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+    .blocker-body { flex: 1; }
+    .blocker-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .blocker-meta { font-size: 0.75rem; color: var(--muted); }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(0,0,0,0.35);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 3px rgba(91,140,255,0.15);
+    }
+    textarea { resize: vertical; min-height: 70px; }
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    /* Auto actions timeline */
+    .timeline {
+      position: relative;
+      padding-right: 20px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      right: 5px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--neon), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      padding: 10px 0 10px 0;
+      margin-bottom: 4px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: 16px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 10px var(--neon);
+    }
+    .timeline-item .time {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .timeline-item .text { font-size: 0.88rem; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #0e1220;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .modal h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Progress ring */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ring {
+      width: 90px; height: 90px;
+      position: relative;
+    }
+    .ring svg { transform: rotate(-90deg); }
+    .ring-value {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--neon3);
+    }
+
+    /* Footer note */
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer a { color: var(--neon); text-decoration: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #12162a;
+      border: 1px solid var(--neon);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      z-index: 200;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      box-shadow: 0 8px 30px rgba(91,140,255,0.3);
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid transparent;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: rgba(91,140,255,0.15);
+      border-color: rgba(91,140,255,0.4);
+      color: var(--neon);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 28px 16px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="neural-canvas"></canvas>
+
+  <div class="app">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div>
+          <h1>گزارش عملکرد روزانه</h1>
+          <p>سرپرست جذب تامین‌کنندگان · شبکه عصبی باروک</p>
+        </div>
+      </div>
+      <div class="meta-date">
+        <span class="date-label">وضعیت زنده <span class="live-dot"></span></span>
+        <span class="date-value" id="today-date">—</span>
+      </div>
+    </header>
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">تماس‌های خروجی امروز</div>
+        <div class="value" id="kpi-out">0</div>
+        <div class="sub">جذب + پیگیری</div>
+      </div>
+      <div class="kpi">
+        <div class="label">تماس‌های ورودی</div>
+        <div class="value" id="kpi-in">0</div>
+        <div class="sub">مشتریان فعال قدیمی</div>
+      </div>
+      <div class="kpi">
+        <div class="label">جلسات روزانه</div>
+        <div class="value" id="kpi-meet">0</div>
+        <div class="sub">برنامه‌ریزی / هماهنگی</div>
+      </div>
+      <div class="kpi">
+        <div class="label">در قیف جذب</div>
+        <div class="value" id="kpi-funnel">0</div>
+        <div class="sub">تامین‌کننده + فروشگاه زنجیره‌ای</div>
+      </div>
+      <div class="kpi">
+        <div class="label">بلاکرهای باز</div>
+        <div class="value" id="kpi-block" style="background:linear-gradient(90deg,#f87171,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0</div>
+        <div class="sub">نیازمند اقدام</div>
+      </div>
+      <div class="kpi">
+        <div class="label">زمان اختصاص‌یافته</div>
+        <div class="value" id="kpi-time">0h</div>
+        <div class="sub">مجموع امروز</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Right column: Calls & Meetings -->
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">📞</span> تماس‌ها و جلسات</div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('call')">+ ثبت تماس / جلسه</button>
+          </div>
+          <div class="tabs">
+            <div class="tab active" data-tab="out">خروجی جذب</div>
+            <div class="tab" data-tab="in">ورودی مشتریان</div>
+            <div class="tab" data-tab="meet">جلسات</div>
+            <div class="tab" data-tab="chain">فروشگاه زنجیره‌ای</div>
+          </div>
+          <div class="tab-content active" id="tab-out">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>طرف تماس</th>
+                    <th>نوع</th>
+                    <th>مدت</th>
+                    <th>نتیجه</th>
+                    <th>زمان</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-out"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-in">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>مشتری</th>
+                    <th>موضوع</th>
+                    <th>مدت</th>
+                    <th>وضعیت پیگیری</th>
+                    <th>زمان</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-in"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-meet">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>عنوان جلسه</th>
+                    <th>شرکت‌کنندگان</th>
+                    <th>مدت</th>
+                    <th>خروجی</th>
+                    <th>زمان</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-meet"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-chain">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>فروشگاه زنجیره‌ای</th>
+                    <th>مرحله قیف</th>
+                    <th>مدت</th>
+                    <th>نتیجه</th>
+                    <th>زمان</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-chain"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blockers -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">🚧</span> بلاکرها</div>
+            <button class="btn btn-danger btn-sm" onclick="openModal('blocker')">+ ثبت بلاکر</button>
+          </div>
+          <div class="blocker-list" id="blocker-list"></div>
+        </div>
+      </div>
+
+      <!-- Left column: Funnel + Auto actions -->
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">🧲</span> قیف جذب باروک</div>
+            <button class="btn btn-ghost btn-sm" onclick="openModal('funnel')">+ مورد جدید</button>
+          </div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
+            مسئولیت اخذ تاییدیه با تیم جذب است و گزارش به مدیریت تیم تامین‌کنندگان ارسال می‌شود.
+          </p>
+          <div class="funnel" id="funnel-container"></div>
+          <div style="margin-top:16px;">
+            <div class="progress-wrap">
+              <div class="ring">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                  <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="7"/>
+                  <circle id="ring-progress" cx="45" cy="45" r="38" fill="none" stroke="url(#grad)" stroke-width="7"
+                    stroke-linecap="round" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+                  <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#5b8cff"/>
+                      <stop offset="100%" stop-color="#22d3ee"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="ring-value" id="ring-pct">0%</div>
+              </div>
+              <div>
+                <div style="font-size:0.85rem;color:var(--muted);">نرخ تبدیل کلی قیف</div>
+                <div style="font-size:0.9rem;margin-top:4px;" id="funnel-summary">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">⏱️</span> اقدامات خودکار بر اساس تاریخ</div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
+            مدت زمان اختصاص‌یافته به‌صورت خودکار محاسبه و «افت» می‌کند (زمان باقی‌مانده).
+          </p>
+          <div class="timeline" id="auto-timeline"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">📋</span> گزارش به مدیریت</div>
+          </div>
+          <textarea id="mgmt-report" placeholder="خلاصه روزانه برای مدیریت تیم تامین‌کنندگان..." rows="4"></textarea>
+          <div class="form-actions">
+            <button class="btn btn-ghost btn-sm" onclick="generateReport()">تولید خودکار خلاصه</button>
+            <button class="btn btn-primary btn-sm" onclick="copyReport()">کپی گزارش</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      لندینگ اینتراکتیو شبکه عصبی · گزارش عملکرد سرپرست جذب تامین‌کنندگان باروک<br/>
+      برای دقت بیشتر جداول تماس، می‌توانید اسکرین‌شات‌ها و لاگ تماس‌های موبایل را ارسال کنید تا داده‌های واقعی جایگزین نمونه شوند.
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 id="modal-title">ثبت</h3>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ========== Neural Network Background ==========
+    const canvas = document.getElementById('neural-canvas');
+    const ctx = canvas.getContext('2d');
+    let nodes = [], animId;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initNodes();
+    }
+    function initNodes() {
+      const count = Math.min(70, Math.floor((canvas.width * canvas.height) / 18000));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2.2 + 1,
+        pulse: Math.random() * Math.PI * 2
+      }));
+    }
+    function drawNeural() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const maxDist = 140;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        a.x += a.vx; a.y += a.vy;
+        a.pulse += 0.03;
+        if (a.x < 0 || a.x > canvas.width) a.vx *= -1;
+        if (a.y < 0 || a.y > canvas.height) a.vy *= -1;
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < maxDist) {
+            const alpha = (1 - d / maxDist) * 0.22;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(91,140,255,${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+        const glow = 0.5 + Math.sin(a.pulse) * 0.3;
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(34,211,238,${0.4 + glow * 0.4})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, a.r * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(91,140,255,${0.06 * glow})`;
+        ctx.fill();
+      }
+      animId = requestAnimationFrame(drawNeural);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    drawNeural();
+
+    // ========== Data Store ==========
+    const STORAGE_KEY = 'barok-neural-report-v1';
+    let state = {
+      calls: [],
+      blockers: [],
+      funnelItems: [],
+      autoActions: []
+    };
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) state = JSON.parse(raw);
+      } catch (e) {}
+      if (!state.calls.length && !state.blockers.length) seedSample();
+    }
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderAll();
+    }
+
+    function seedSample() {
+      const now = new Date();
+      const t = (h, m) => {
+        const d = new Date(now);
+        d.setHours(h, m, 0, 0);
+        return d.toISOString();
+      };
+      state.calls = [
+        { id: uid(), type: 'out', name: 'تامین‌کننده آریا پخش', category: 'جذب تامین‌کننده', duration: 18, result: 'ارجاع به قیف', time: t(9, 15), notes: '' },
+        { id: uid(), type: 'out', name: 'شرکت سپهر مواد', category: 'جذب تامین‌کننده', duration: 12, result: 'نیاز به پیگیری', time: t(10, 5), notes: '' },
+        { id: uid(), type: 'chain', name: 'فروشگاه زنجیره‌ای افق', category: 'جذب زنجیره‌ای', duration: 25, result: 'ورود به مرحله معرفی', time: t(11, 20), notes: '' },
+        { id: uid(), type: 'in', name: 'مشتری فعال — فروشگاه نگین', category: 'پیگیری تراکنش', duration: 8, result: 'حل شد', time: t(12, 40), notes: 'سوال موجودی' },
+        { id: uid(), type: 'in', name: 'مشتری فعال — هایپرمی', category: 'پیگیری تراکنش', duration: 14, result: 'ارجاع به پشتیبانی', time: t(14, 10), notes: '' },
+        { id: uid(), type: 'meet', name: 'جلسه روزانه تیم جذب', category: 'هماهنگی', duration: 30, result: 'اولویت‌بندی ۳ هدف', time: t(8, 30), notes: 'با مدیریت تامین‌کنندگان' },
+        { id: uid(), type: 'meet', name: 'هماهنگی قیف باروک', category: 'هماهنگی', duration: 20, result: 'تایید ۲ پرونده', time: t(16, 0), notes: '' },
+        { id: uid(), type: 'chain', name: 'فروشگاه زنجیره‌ای شهروند', category: 'جذب زنجیره‌ای', duration: 15, result: 'منتظر تاییدیه', time: t(15, 30), notes: '' }
+      ];
+      state.blockers = [
+        { id: uid(), title: 'تاخیر در تایید مدارک تامین‌کننده سپهر', desc: 'مدارک ناقص — نیاز به پیگیری از سمت تامین‌کننده', created: t(9, 0), resolved: false, owner: 'تیم جذب' },
+        { id: uid(), title: 'عدم پاسخ‌گویی فروشگاه افق در مرحله معرفی', desc: 'دو تماس بی‌پاسخ؛ اقدام بعدی: پیام واتساپ + ایمیل', created: t(11, 45), resolved: false, owner: 'سرپرست جذب' }
+      ];
+      state.funnelItems = [
+        { id: uid(), name: 'آریا پخش', kind: 'supplier', stage: 1, created: t(9, 20) },
+        { id: uid(), name: 'سپهر مواد', kind: 'supplier', stage: 0, created: t(10, 10) },
+        { id: uid(), name: 'افق', kind: 'chain', stage: 2, created: t(11, 30) },
+        { id: uid(), name: 'شهروند', kind: 'chain', stage: 3, created: t(15, 40) },
+        { id: uid(), name: 'تامین‌کننده پارس', kind: 'supplier', stage: 4, created: daysAgo(3) },
+        { id: uid(), name: 'هایپر فامیلی', kind: 'chain', stage: 1, created: daysAgo(1) }
+      ];
+      state.autoActions = [
+        { id: uid(), title: 'پیگیری تاییدیه آریا پخش', created: t(9, 25), durationHours: 4, assignedTo: 'تیم جذب' },
+        { id: uid(), title: 'ارسال پیشنهاد به فروشگاه افق', created: t(11, 35), durationHours: 6, assignedTo: 'سرپرست' },
+        { id: uid(), title: 'پیگیری مدارک سپهر مواد', created: t(10, 15), durationHours: 8, assignedTo: 'تیم جذب' },
+        { id: uid(), title: 'گزارش روزانه به مدیریت تامین‌کنندگان', created: t(8, 0), durationHours: 10, assignedTo: 'سرپرست' }
+      ];
+      save();
+    }
+
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+    function daysAgo(n) {
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return d.toISOString();
+    }
+
+    // ========== Render ==========
+    function renderAll() {
+      renderDate();
+      renderKPIs();
+      renderTables();
+      renderBlockers();
+      renderFunnel();
+      renderAutoActions();
+    }
+
+    function renderDate() {
+      const d = new Date();
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('today-date').textContent = d.toLocaleDateString('fa-IR', opts);
+    }
+
+    function renderKPIs() {
+      const out = state.calls.filter(c => c.type === 'out' || c.type === 'chain').length;
+      const inn = state.calls.filter(c => c.type === 'in').length;
+      const meet = state.calls.filter(c => c.type === 'meet').length;
+      const funnel = state.funnelItems.length;
+      const block = state.blockers.filter(b => !b.resolved).length;
+      const mins = state.calls.reduce((s, c) => s + (c.duration || 0), 0);
+      document.getElementById('kpi-out').textContent = out;
+      document.getElementById('kpi-in').textContent = inn;
+      document.getElementById('kpi-meet').textContent = meet;
+      document.getElementById('kpi-funnel').textContent = funnel;
+      document.getElementById('kpi-block').textContent = block;
+      document.getElementById('kpi-time').textContent = (mins / 60).toFixed(1) + 'h';
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderTables() {
+      const map = { out: 'tbody-out', in: 'tbody-in', meet: 'tbody-meet', chain: 'tbody-chain' };
+      Object.keys(map).forEach(type => {
+        const tbody = document.getElementById(map[type]);
+        const rows = state.calls.filter(c => c.type === type);
+        if (!rows.length) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty">موردی ثبت نشده</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = rows.map(c => {
+          let badgeClass = 'badge-info';
+          if (c.result && (c.result.includes('حل') || c.result.includes('تایید') || c.result.includes('ارجاع به قیف'))) badgeClass = 'badge-success';
+          else if (c.result && (c.result.includes('منتظر') || c.result.includes('پیگیری'))) badgeClass = 'badge-warn';
+          else if (c.result && c.result.includes('ارجاع به پشتیبانی')) badgeClass = 'badge-purple';
+          return `<tr>
+            <td>${esc(c.name)}</td>
+            <td>${esc(c.category || '—')}</td>
+            <td>${c.duration || 0} دقیقه</td>
+            <td><span class="badge ${badgeClass}">${esc(c.result || '—')}</span></td>
+            <td>${fmtTime(c.time)}</td>
+          </tr>`;
+        }).join('');
+      });
+    }
+
+    function renderBlockers() {
+      const list = document.getElementById('blocker-list');
+      if (!state.blockers.length) {
+        list.innerHTML = '<div class="empty">بلاکری ثبت نشده</div>';
+        return;
+      }
+      list.innerHTML = state.blockers.map(b => `
+        <div class="blocker-item ${b.resolved ? 'resolved' : ''}">
+          <div class="dot"></div>
+          <div class="blocker-body">
+            <div class="blocker-title">${esc(b.title)}</div>
+            <div class="blocker-meta">${esc(b.desc || '')} · ${esc(b.owner || '')} · ${fmtTime(b.created)}</div>
+          </div>
+          <div>
+            ${!b.resolved ? `<button class="btn btn-ghost btn-sm" onclick="resolveBlocker('${b.id}')">حل شد</button>` : '<span class="badge badge-success">حل‌شده</span>'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const FUNNEL_STAGES = [
+      { id: 0, name: 'شناسایی / تماس اولیه' },
+      { id: 1, name: 'معرفی و ارسال مدارک' },
+      { id: 2, name: 'بررسی و ارزیابی' },
+      { id: 3, name: 'اخذ تاییدیه تیم جذب' },
+      { id: 4, name: 'تایید نهایی و ورود' }
+    ];
+
+    function renderFunnel() {
+      const counts = FUNNEL_STAGES.map(s => state.funnelItems.filter(i => i.stage === s.id).length);
+      const max = Math.max(...counts, 1);
+      const total = state.funnelItems.length || 1;
+      const done = counts[4] || 0;
+      const pct = Math.round((done / total) * 100);
+
+      const container = document.getElementById('funnel-container');
+      container.innerHTML = FUNNEL_STAGES.map((s, idx) => {
+        const w = Math.max(18, (counts[idx] / max) * 100);
+        return `<div class="funnel-step" title="کلیک برای جزئیات">
+          <div>
+            <div class="step-name">${s.name}</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${counts[idx]} مورد</div>
+          </div>
+          <div class="step-count">${counts[idx]}</div>
+          <div class="step-bar" style="width:${w}%"></div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('ring-pct').textContent = pct + '%';
+      const circumference = 2 * Math.PI * 38;
+      const offset = circumference * (1 - pct / 100);
+      document.getElementById('ring-progress').style.strokeDashoffset = offset;
+      document.getElementById('funnel-summary').textContent =
+        `${done} از ${total} به مرحله نهایی رسیده‌اند · ${state.funnelItems.filter(i => i.kind === 'supplier').length} تامین‌کننده · ${state.funnelItems.filter(i => i.kind === 'chain').length} زنجیره‌ای`;
+    }
+
+    function renderAutoActions() {
+      const el = document.getElementById('auto-timeline');
+      const now = Date.now();
+      if (!state.autoActions.length) {
+        el.innerHTML = '<div class="empty">اقدام خودکاری تعریف نشده</div>';
+        return;
+      }
+      el.innerHTML = state.autoActions.map(a => {
+        const created = new Date(a.created).getTime();
+        const end = created + (a.durationHours || 4) * 3600 * 1000;
+        const remaining = end - now;
+        let status, badge;
+        if (remaining <= 0) {
+          status = 'زمان اختصاص‌یافته به پایان رسیده (افت کامل)';
+          badge = 'badge-danger';
+        } else {
+          const h = Math.floor(remaining / 3600000);
+          const m = Math.floor((remaining % 3600000) / 60000);
+          status = `زمان باقی‌مانده: ${h}س ${m}د · اختصاص: ${a.durationHours} ساعت`;
+          badge = remaining < 3600000 ? 'badge-warn' : 'badge-info';
+        }
+        return `<div class="timeline-item">
+          <div class="time">${fmtTime(a.created)} · ${esc(a.assignedTo || '')}</div>
+          <div class="text">${esc(a.title)}</div>
+          <div style="margin-top:4px;"><span class="badge ${badge}">${status}</span></div>
+        </div>`;
+      }).join('');
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>').replace(/"/g,'"');
+    }
+
+    // ========== Tabs ==========
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ========== Modal ==========
+    function openModal(kind) {
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+      if (kind === 'call') {
+        title.textContent = 'ثبت تماس یا جلسه';
+        body.innerHTML = `
+          <div class="form-grid">
+            <div>
+              <label>نوع</label>
+              <select id="f-type">
+                <option value="out">خروجی — جذب تامین‌کننده</option>
+                <option value="chain">خروجی — فروشگاه زنجیره‌ای</option>
+                <option value="in">ورودی — مشتری فعال</option>
+                <option value="meet">جلسه روزانه</option>
+              </select>
+            </div>
+            <div>
+              <label>نام / طرف تماس</label>
+              <input id="f-name" placeholder="نام تامین‌کننده یا فروشگاه" />
+            </div>
+            <div>
+              <label>دسته‌بندی</label>
+              <input id="f-cat" placeholder="مثلاً جذب تامین‌کننده" />
+            </div>
+            <div>
+              <label>مدت (دقیقه)</label>
+              <input id="f-dur" type="number" min="1" value="10" />
+            </div>
+            <div style="grid-column:1/-1">
+              <label>نتیجه / خروجی</label>
+              <input id="f-result" placeholder="مثلاً ارجاع به قیف / حل شد" />
+            </div>
+            <div style="grid-column:1/-1">
+              <label>یادداشت</label>
+              <textarea id="f-notes" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" onclick="closeModal()">انصراف</button>
+            <button class="btn btn-primary" onclick="addCall()">ثبت</button>
+          </div>`;
+      } else if (kind === 'blocker') {
+        title.textContent = 'ثبت بلاکر';
+        body.innerHTML = `
+          <div class="form-grid">
+            <div style="grid-column:1/-1">
+              <label>عنوان بلاکر</label>
+              <input id="b-title" placeholder="مثلاً تاخیر در تایید مدارک" />
+            </div>
+            <div style="grid-column:1/-1">
+              <label>توضیح</label>
+              <textarea id="b-desc" rows="2"></textarea>
+            </div>
+            <div>
+              <label>مسئول</label>
+              <input id="b-owner" value="تیم جذب" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" onclick="closeModal()">انصراف</button>
+            <button class="btn btn-primary" onclick="addBlocker()">ثبت بلاکر</button>
+          </div>`;
+      } else if (kind === 'funnel') {
+        title.textContent = 'افزودن به قیف جذب';
+        body.innerHTML = `
+          <div class="form-grid">
+            <div>
+              <label>نام</label>
+              <input id="fn-name" placeholder="نام تامین‌کننده یا فروشگاه" />
+            </div>
+            <div>
+              <label>نوع</label>
+              <select id="fn-kind">
+                <option value="supplier">تامین‌کننده</option>
+                <option value="chain">فروشگاه زنجیره‌ای</option>
+              </select>
+            </div>
+            <div style="grid-column:1/-1">
+              <label>مرحله فعلی</label>
+              <select id="fn-stage">
+                ${FUNNEL_STAGES.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" onclick="closeModal()">انصراف</button>
+            <button class="btn btn-primary" onclick="addFunnel()">افزودن</button>
+          </div>`;
+      }
+      modal.classList.add('open');
+    }
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target.id === 'modal') closeModal();
+    });
+
+    function addCall() {
+      const type = document.getElementById('f-type').value;
+      const name = document.getElementById('f-name').value.trim();
+      if (!name) return toast('نام را وارد کنید');
+      state.calls.unshift({
+        id: uid(),
+        type,
+        name,
+        category: document.getElementById('f-cat').value.trim() || (type === 'meet' ? 'هماهنگی' : type === 'in' ? 'پیگیری تراکنش' : 'جذب'),
+        duration: parseInt(document.getElementById('f-dur').value, 10) || 10,
+        result: document.getElementById('f-result').value.trim() || '—',
+        time: new Date().toISOString(),
+        notes: document.getElementById('f-notes').value.trim()
+      });
+      // auto action when referring to funnel
+      const res = document.getElementById('f-result').value;
+      if (res && res.includes('قیف')) {
+        state.autoActions.unshift({
+          id: uid(),
+          title: `پیگیری تاییدیه — ${name}`,
+          created: new Date().toISOString(),
+          durationHours: 4,
+          assignedTo: 'تیم جذب'
+        });
+      }
+      save();
+      closeModal();
+      toast('تماس / جلسه ثبت شد');
+    }
+
+    function addBlocker() {
+      const title = document.getElementById('b-title').value.trim();
+      if (!title) return toast('عنوان بلاکر را وارد کنید');
+      state.blockers.unshift({
+        id: uid(),
+        title,
+        desc: document.getElementById('b-desc').value.trim(),
+        owner: document.getElementById('b-owner').value.trim() || 'تیم جذب',
+        created: new Date().toISOString(),
+        resolved: false
+      });
+      save();
+      closeModal();
+      toast('بلاکر ثبت شد');
+    }
+
+    function resolveBlocker(id) {
+      const b = state.blockers.find(x => x.id === id);
+      if (b) { b.resolved = true; save(); toast('بلاکر حل‌شده علامت خورد'); }
+    }
+
+    function addFunnel() {
+      const name = document.getElementById('fn-name').value.trim();
+      if (!name) return toast('نام را وارد کنید');
+      const stage = parseInt(document.getElementById('fn-stage').value, 10);
+      state.funnelItems.push({
+        id: uid(),
+        name,
+        kind: document.getElementById('fn-kind').value,
+        stage,
+        created: new Date().toISOString()
+      });
+      state.autoActions.unshift({
+        id: uid(),
+        title: `اقدام خودکار قیف — ${name} (مرحله ${stage})`,
+        created: new Date().toISOString(),
+        durationHours: stage >= 3 ? 2 : 6,
+        assignedTo: 'تیم جذب'
+      });
+      save();
+      closeModal();
+      toast('به قیف اضافه شد + اقدام خودکار ایجاد شد');
+    }
+
+    function generateReport() {
+      const out = state.calls.filter(c => c.type === 'out' || c.type === 'chain').length;
+      const inn = state.calls.filter(c => c.type === 'in').length;
+      const meet = state.calls.filter(c => c.type === 'meet').length;
+      const openB = state.blockers.filter(b => !b.resolved).length;
+      const mins = state.calls.reduce((s, c) => s + (c.duration || 0), 0);
+      const text =
+`گزارش عملکرد روزانه — سرپرست جذب تامین‌کنندگان
+تاریخ: ${new Date().toLocaleDateString('fa-IR')}
+
+• تماس‌های خروجی جذب و زنجیره‌ای: ${out}
+• تماس‌های ورودی مشتریان فعال: ${inn}
+• جلسات روزانه: ${meet}
+• مجموع زمان تماس/جلسه: ${(mins/60).toFixed(1)} ساعت
+• موارد در قیف جذب باروک: ${state.funnelItems.length}
+• بلاکرهای باز: ${openB}
+
+مسئولیت اخذ تاییدیه با تیم جذب است و این گزارش جهت اطلاع مدیریت تیم تامین‌کنندگان ارسال می‌شود.
+`;
+      document.getElementById('mgmt-report').value = text;
+      toast('خلاصه تولید شد');
+    }
+
+    function copyReport() {
+      const t = document.getElementById('mgmt-report');
+      t.select();
+      navigator.clipboard.writeText(t.value).then(() => toast('کپی شد')).catch(() => toast('دستی کپی کنید'));
+    }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    // refresh remaining times every minute
+    setInterval(() => renderAutoActions(), 60000);
+
+    load();
+    renderAll();
+  </script>
+</body>
+</html>
